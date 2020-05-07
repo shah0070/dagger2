@@ -6,12 +6,14 @@ import com.hookedonplay.decoviewlib.BuildConfig;
 
 import timber.log.Timber;
 
-public class BaseApplication extends Application {
-    private AppComponent appComponent;
 
+public class BaseApplication extends Application {
     public AppComponent getAppComponent() {
+
         return appComponent;
     }
+
+    private AppComponent appComponent;
 
     public void setAppComponent(AppComponent appComponent) {
         this.appComponent = appComponent;
