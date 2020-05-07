@@ -1,0 +1,166 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+task checkstyle(type: Checkstyle) {
+    configFile file("${project.rootDir}/config/quality/checkstyle.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+    exclude '**/test/java/in/rrapps/mvpdaggertesting/**'
+
+    classpath = files()
+
+    // set to false if you want to consider warning as error
+    ignoreFailures = false
+}
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId "com.ecommerce.myapplication"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+    }
+
+    lintOptions {
+        // set to true to turn off analysis progress reporting by lint
+        quiet true
+        // if true, stop the gradle build if errors are found
+        abortOnError false
+        // if true, only report errors
+        ignoreWarnings false
+        // if true, emit full/absolute paths to files with errors (true by default)
+        //absolutePaths true
+        // if true, check all issues, including those that are off by default
+        checkAllWarnings true
+        // if true, treat all warnings as errors
+        warningsAsErrors false
+        // turn off checking the given issue id's
+        disable 'TypographyFractions', 'TypographyQuotes'
+        // turn on the given issue id's
+        enable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
+        // check *only* the given issue id's
+        //check 'NewApi', 'InlinedApi'
+        // if true, don't include source code lines in the error output
+        noLines false
+        // if true, show all locations for an error, do not truncate lists, etc.
+        showAll true
+        // Fallback lint configuration (default severities, etc.)
+        lintConfig file("default-lint.xml")
+        // if true, generate a text report of issues (false by default)
+        textReport false
+        // location to write the output; can be a file or 'stdout'
+        textOutput 'stdout'
+        // if true, generate an XML report for use by for example Jenkins
+        xmlReport false
+        // file to write report to (if not specified, defaults to lint-results.xml)
+        xmlOutput file("build/reports/lint/lint-report.xml")
+        // if true, generate an HTML report (with issue explanations, sourcecode, etc)
+        htmlReport true
+        // optional path to report (default will be lint-results.html in the builddir)
+        htmlOutput file("build/reports/lint/lint-report.html")
+    }
+
+    final API_URL_DEV = "https://api.themoviedb.org/3/";
+
+    buildTypes {
+
+        debug {
+            minifyEnabled false
+            buildConfigField 'String', 'API_URL', "\"" + API_URL_DEV + "\""
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+}
+
+def retrofitVersion = '2.5.0'
+def lifecycleExtensionsVersion = '1.1.1'
+def daggerVersion = '2.13'
+def rxJavaVersion = "2.1.6"
+def rxAndroidVersion = "2.0.1"
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.work:work-runtime:2.0.1'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+
+
+//    implementation 'androidx.room:room-runtime:2.1.0'
+//    implementation 'androidx.room:room-rxjava2:2.1.0'
+//    annotationProcessor 'androidx.room:room-compiler:2.1.0'
+
+//DAGGER
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+   // annotationProcessor 'com.google.auto.value:auto-value:1.1'
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+    implementation 'com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:2.0.0'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+   // implementation 'org.projectlombok:lombok:1.16.18'
+    implementation 'com.github.bmarrdev:android-DecoView-charting:v1.2'
+
+
+// Timber for logging
+    implementation 'com.jakewharton.timber:timber:4.5.1'
+
+    // Butterknife for view injection
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'com.blankj:utilcodex:1.26.0'
+
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    implementation "android.arch.persistence.room:rxjava2:1.0.0"
+
+    kapt "android.arch.persistence.room:compiler:1.0.0"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+}
